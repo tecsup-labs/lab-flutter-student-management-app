@@ -1,40 +1,56 @@
-# Gestor de Alumnos - Flutter Premium App 🎓
+# Gestor de Alumnos - Flutter Cupertino App
 
-Una aplicación móvil moderna, minimalista y elegante desarrollada en Flutter (Dart) para la gestión académica simulada de alumnos, creada como parte del **Laboratorio S10** por **Antony Cholan**.
+Una aplicación móvil moderna, minimalista y de alto rendimiento desarrollada en Flutter (Dart) bajo los lineamientos y directrices de diseño Apple iOS (Cupertino). Creada por Antony Cholan para el desarrollo académico del curso de aplicaciones multiplataforma.
 
----
-
-## 🎨 Características Destacadas
-*   **Visuales Premium e Interfaz Coherente**: Paleta de colores cálida de alto contraste (`Color(0xFFFFF9F5)` de fondo y textos en `Color(0xFF2B231E)`), logrando una legibilidad perfecta.
-*   **Diseño Abstracto Limpio**: Sustitución de imágenes por iconos vectoriales estilizados para una estética minimalista.
-*   **Navegación Fluida**: Flujo completo de 5 pantallas dinámicas implementado mediante rutas nativas (`Navigator.push` y `Navigator.pop`).
-*   **Cabecera de Login Curva (CustomWaveClipper)**: Onda con degradado fluido naranja y curvas de Bézier cuadráticas para una primera impresión premium.
-*   **Persistencia Simulada en Memoria**: Gestión dinámica de la información en memoria temporal reactiva (`Globals.alumnos`) compartida a través de las pantallas.
-*   **Validaciones en Formularios (RegExp)**: Control robusto mediante expresiones regulares que bloquea números y caracteres especiales en los nombres y apellidos.
-*   **Empty States Inteligentes**: Pantalla informativa ilustrada que responde reactivamente cuando el listado de alumnos está vacío.
-*   **Diálogo de Cerrar Sesión Personalizado**: Cuadro interactivo moderno con diseño redondeado e iconos decorativos.
-*   **Selector de Fecha Tematizado**: Integración del widget de calendario nativo tematizado en armonía con los colores de la aplicación.
+Este proyecto demuestra una transición arquitectónica y visual completa desde Material Design hacia el ecosistema Cupertino, logrando la experiencia nativa que un usuario de iPhone espera, optimizando layouts para dispositivos modernos con Dynamic Island y respetando la paleta cromática personalizada y premium del diseño original.
 
 ---
 
-## 📸 Estructura del Flujo de Pantallas
-1.  **LoginScreen**: Autenticación segura con credenciales simuladas (`admin` / `1234`).
-2.  **HomeScreen**: Panel principal interactivo con el saludo personalizado al usuario e icono del perfil a la cabecera.
-3.  **RegisterScreen**: Registro completo de nuevos alumnos con validación de letras y selector de fecha.
-4.  **ListScreen**: Listado reactivo de alumnos con avatares autogenerados de colores, buscador dinámico en tiempo real y vista de estado vacío.
-5.  **ProfileScreen**: Edición de datos del perfil del usuario administrador.
-6.  **FaqScreen**: Sección interactiva de preguntas y respuestas frecuentes implementada con `ExpansionTile`.
+## Credenciales de Acceso (Simuladas)
+
+Para evaluar el flujo de autenticación en la pantalla de inicio de sesión (LoginScreen), utilice los siguientes datos de acceso:
+
+*   **Usuario / Correo:** admin (o admin@ejemplo.com)
+*   **Contraseña:** 1234
 
 ---
 
-## 🚀 Requisitos para la Ejecución
-*   [Flutter SDK](https://flutter.dev/docs/get-started/install) (versión estable más reciente).
-*   [Dart SDK](https://dart.dev/get-dart).
-*   Simulador iOS (Xcode) o Android Emulator.
+## Características e Implementación de Cupertino (iOS)
+
+Se ha migrado el núcleo completo de la aplicación, incorporando componentes nativos del paquete flutter/cupertino.dart:
+
+1.  **Arquitectura de Temas Nativos (CupertinoApp):**
+    *   Sustitución de MaterialApp por CupertinoApp.
+    *   Uso de CupertinoThemeData para heredar de forma centralizada la tipografía premium Outfit y la paleta de colores personalizada (fondo crema #FFF9F5 y textos en #2B231E).
+2.  **Pantalla de Login con iOS Switch:**
+    *   Migración de inputs de texto a CupertinoTextField con enfoque activo de color.
+    *   Uso de CupertinoSwitch (interruptor deslizante de iOS) en lugar del checkbox de Android.
+    *   Indicador de carga circular nativo CupertinoActivityIndicator integrado en el botón de ingreso para simular latencia de red.
+3.  **Selector de Fecha Deslizante (CupertinoDatePicker):**
+    *   El formulario de registro (RegisterScreen) y perfil (ProfileScreen) despliegan un CupertinoDatePicker en forma de rodillo 3D dentro de una hoja inferior deslizable (showCupertinoModalPopup), simulando el comportamiento de fecha nativo de Apple.
+4.  **Confirmación con Cupertino Action Sheet:**
+    *   La confirmación de salida en el cierre de sesión se realiza mediante CupertinoActionSheet, emergiendo desde la base del dispositivo con diseño redondeado y botón de alerta destructivo (rojo) para la salida segura.
+5.  **Pestañas Segmentadas (CupertinoSegmentedControl):**
+    *   Implementación de pestañas de filtrado superior en el listado de alumnos para ordenar registros instantáneamente: Todos, Nombre (A-Z) y Nuevos (registrados recientes).
+6.  **Interacción Avanzada 3D Touch (CupertinoContextMenu):**
+    *   Cada tarjeta de alumno de la lista está envuelta en un CupertinoContextMenu. Al mantener presionado un alumno, la celda flota y desenfoca la pantalla de fondo, mostrando opciones flotantes para "Ver Detalles" (mediante CupertinoAlertDialog) o "Eliminar Alumno".
+7.  **Header Seguro con SafeArea:**
+    *   Se rediseñó el header de la pantalla de perfil (ProfileScreen) integrando controles de navegación personalizados en el cuerpo de la vista con soporte directo de SafeArea. Esto garantiza que los botones de navegación ("Atrás") queden posicionados perfectamente bajo la hora e islas dinámicas sin recortar interacciones.
 
 ---
 
-## 📦 Instalación y Uso
+## Estructura del Flujo de Pantallas
+
+1.  **LoginScreen:** Autenticación de usuario con spinner de carga simulado y switch de iOS.
+2.  **HomeScreen:** Panel principal que da la bienvenida al usuario y enlaza mediante atenuaciones táctiles nativas a los módulos.
+3.  **RegisterScreen:** Formulario de registro con Expresiones Regulares (RegExp) para bloquear números y selector de fecha iOS.
+4.  **ListScreen:** Listado reactivo de alumnos con avatares de color dinámicos, pestañas de ordenamiento segmentado, buscador e interacción de presión larga.
+5.  **ProfileScreen:** Panel de edición del perfil del administrador con controles adaptados para evitar superposiciones con el notch o Dynamic Island.
+6.  **FaqScreen:** Módulo de preguntas frecuentes animado mediante el widget personalizado CupertinoExpansionTile.
+
+---
+
+## Instalación y Uso
 
 1. **Clonar el repositorio**:
    ```bash
@@ -42,12 +58,12 @@ Una aplicación móvil moderna, minimalista y elegante desarrollada en Flutter (
    cd lab-flutter-student-management-app
    ```
 
-2. **Obtener dependencias**:
+2. **Obtener las dependencias**:
    ```bash
    flutter pub get
    ```
 
-3. **Ejecutar la aplicación**:
+3. **Ejecutar en el simulador de iOS o dispositivo físico**:
    ```bash
    flutter run
    ```
