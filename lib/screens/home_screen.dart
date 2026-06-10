@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show Colors, Offset, BoxShadow, BoxShape, BuildContext, Color, EdgeInsets, FontWeight, MainAxisAlignment, CrossAxisAlignment, Navigator, TextStyle, VoidCallback; // Conservamos algunos objetos de estructura y estilo que no tienen equivalente en Cupertino o que son estándar
 import '../globals.dart';
 import 'profile_screen.dart';
 import 'register_screen.dart';
@@ -16,134 +17,48 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // Función para mostrar el modal de Cerrar Sesión inspirado en el diseño final
   void _showLogoutDialog() {
-    showDialog(
+    showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Icono de candado moderno con estrellas alrededor
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFF2E6),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFFFF7A00).withOpacity(0.1),
-                            blurRadius: 20,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Icon(
-                      Icons.lock_open_rounded,
-                      size: 48,
-                      color: Color(0xFFFF7A00),
-                    ),
-                    // Decoraciones simulando las estrellas
-                    Positioned(
-                      top: 10,
-                      left: 10,
-                      child: Icon(Icons.star, size: 12, color: const Color(0xFFFF7A00).withOpacity(0.6)),
-                    ),
-                    Positioned(
-                      bottom: 12,
-                      right: 8,
-                      child: Icon(Icons.star, size: 14, color: const Color(0xFFFF9E43).withOpacity(0.8)),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                const Text(
-                  'Cerrar Sesión',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2B231E),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  '¿Estás seguro que deseas\ncerrar sesión?',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Color(0xFF70655E),
-                    height: 1.4,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                // Botón Cerrar Sesión
-                SizedBox(
-                  width: double.infinity,
-                  height: 52,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Cierra el diálogo
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => const LoginScreen()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFF7A00),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: const Text(
-                      'Cerrar Sesión',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                // Botón Cancelar
-                SizedBox(
-                  width: double.infinity,
-                  height: 52,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        side: BorderSide(
-                          color: const Color(0xFFFF7A00).withOpacity(0.18),
-                          width: 1,
-                        ),
-                      ),
-                    ),
-                    child: const Text(
-                      'Cancelar',
-                      style: TextStyle(
-                        color: Color(0xFFFF7A00),
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+        return CupertinoActionSheet(
+          title: const Text(
+            'Cerrar Sesión',
+            style: TextStyle(
+              fontFamily: 'Outfit',
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
             ),
+          ),
+          message: const Text(
+            '¿Estás seguro que deseas cerrar sesión?',
+            style: TextStyle(
+              fontFamily: 'Outfit',
+              fontSize: 14,
+            ),
+          ),
+          actions: [
+            CupertinoActionSheetAction(
+              isDestructiveAction: true,
+              onPressed: () {
+                Navigator.of(context).pop(); // Cierra el ActionSheet
+                Navigator.of(context).pushReplacement(
+                  CupertinoPageRoute(builder: (context) => const LoginScreen()),
+                );
+              },
+              child: const Text('Cerrar Sesión', style: TextStyle(fontFamily: 'Outfit')),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                fontFamily: 'Outfit',
+                color: Color(0xFFFF7A00),
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
         );
       },
@@ -152,9 +67,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CupertinoPageScaffold(
       backgroundColor: const Color(0xFFFFF9F5),
-      body: SafeArea(
+      child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
@@ -178,6 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF2B231E),
                           letterSpacing: -0.5,
+                          fontFamily: 'Outfit',
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -186,6 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                           fontSize: 14,
                           color: Color(0xFF70655E),
+                          fontFamily: 'Outfit',
                         ),
                       ),
                     ],
@@ -207,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       border: Border.all(color: Colors.white, width: 2),
                     ),
                     child: const Icon(
-                      Icons.person_rounded,
+                      CupertinoIcons.person_fill,
                       color: Color(0xFFFF7A00),
                       size: 24,
                     ),
@@ -221,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   physics: const BouncingScrollPhysics(),
                   children: [
                     _buildMenuCard(
-                      icon: Icons.person_outline,
+                      icon: CupertinoIcons.person,
                       iconColor: const Color(0xFFFF7A00),
                       iconBgColor: const Color(0xFFFFF2E6),
                       title: 'Mi Perfil',
@@ -229,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                          CupertinoPageRoute(builder: (context) => const ProfileScreen()),
                         ).then((_) {
                           // Actualizar el saludo al volver
                           setState(() {});
@@ -238,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 16),
                     _buildMenuCard(
-                      icon: Icons.person_add_alt_1_outlined,
+                      icon: CupertinoIcons.person_badge_plus,
                       iconColor: const Color(0xFF34C759),
                       iconBgColor: const Color(0xFFE8F9ED),
                       title: 'Registrar Alumno',
@@ -246,13 +163,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                          CupertinoPageRoute(builder: (context) => const RegisterScreen()),
                         ).then((_) => setState(() {}));
                       },
                     ),
                     const SizedBox(height: 16),
                     _buildMenuCard(
-                      icon: Icons.format_list_bulleted_rounded,
+                      icon: CupertinoIcons.list_bullet,
                       iconColor: const Color(0xFF007AFF),
                       iconBgColor: const Color(0xFFE5F1FF),
                       title: 'Listar Alumnos',
@@ -260,13 +177,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const ListScreen()),
+                          CupertinoPageRoute(builder: (context) => const ListScreen()),
                         ).then((_) => setState(() {}));
                       },
                     ),
                     const SizedBox(height: 16),
                     _buildMenuCard(
-                      icon: Icons.help_outline_rounded,
+                      icon: CupertinoIcons.question_circle,
                       iconColor: const Color(0xFFFFB900),
                       iconBgColor: const Color(0xFFFFF9E6),
                       title: 'Preguntas Frecuentes',
@@ -274,14 +191,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const FaqScreen()),
+                          CupertinoPageRoute(builder: (context) => const FaqScreen()),
                         );
                       },
                     ),
                     const SizedBox(height: 16),
                     // Tarjeta de Cerrar Sesión
                     _buildMenuCard(
-                      icon: Icons.logout_rounded,
+                      icon: CupertinoIcons.square_arrow_right,
                       iconColor: const Color(0xFFFF4A4A),
                       iconBgColor: const Color(0xFFFFECEC),
                       title: 'Cerrar Sesión',
@@ -319,61 +236,61 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                // Contenedor del Icono
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: iconBgColor,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Icon(
-                    icon,
-                    color: iconColor,
-                    size: 24,
-                  ),
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        borderRadius: BorderRadius.circular(20),
+        onPressed: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              // Contenedor del Icono
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: iconBgColor,
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                const SizedBox(width: 16),
-                // Textos
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF2B231E),
-                        ),
+                child: Icon(
+                  icon,
+                  color: iconColor,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 16),
+              // Textos
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2B231E),
+                        fontFamily: 'Outfit',
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        subtitle,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF70655E),
-                        ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF70655E),
+                        fontFamily: 'Outfit',
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                // Flecha derecha
-                const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: Color(0xFF91857D),
-                  size: 14,
-                ),
-              ],
-            ),
+              ),
+              // Flecha derecha
+              const Icon(
+                CupertinoIcons.chevron_forward,
+                color: Color(0xFF91857D),
+                size: 14,
+              ),
+            ],
           ),
         ),
       ),

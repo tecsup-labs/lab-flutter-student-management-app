@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'screens/login_screen.dart';
 
 void main() {
@@ -10,27 +10,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const CupertinoApp(
       title: 'Gestor de Alumnos',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        primaryColor: const Color(0xFFFF7A00),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFFF7A00),
-          primary: const Color(0xFFFF7A00),
-          surface: const Color(0xFFFFF9F5),
-        ),
-        scaffoldBackgroundColor: const Color(0xFFFFF9F5),
-        // Configuración de tipografía por defecto limpia
-        fontFamily: 'Outfit',
-        textTheme: const TextTheme(
-          titleLarge: TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.bold, color: Color(0xFF2B231E)),
-          bodyLarge: TextStyle(fontFamily: 'Outfit', color: Color(0xFF2B231E)),
-          bodyMedium: TextStyle(fontFamily: 'Outfit', color: Color(0xFF70655E)),
+      theme: CupertinoThemeData(
+        primaryColor: Color(0xFFFF7A00),
+        scaffoldBackgroundColor: Color(0xFFFFF9F5),
+        textTheme: CupertinoTextThemeData(
+          primaryColor: Color(0xFFFF7A00),
+          textStyle: TextStyle(fontFamily: 'Outfit', color: Color(0xFF2B231E)),
         ),
       ),
-      home: const LoginScreen(),
+      home: LoginScreen(),
     );
   }
 }

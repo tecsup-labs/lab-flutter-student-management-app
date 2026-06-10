@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show Colors; // Usamos Colors para el blanco/transparente si es necesario, o podemos usar CupertinoColors
 import '../widgets/header_wave.dart';
 import 'home_screen.dart';
 
@@ -14,54 +15,77 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _obscureText = true;
   bool _rememberMe = false;
+  bool _isLoading = false;
+
+  final FocusNode _emailFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _emailFocus.addListener(() => setState(() {}));
+    _passwordFocus.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _showAlertDialog(String title, String message) {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text(title, style: const TextStyle(fontFamily: 'Outfit')),
+        content: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(message, style: const TextStyle(fontFamily: 'Outfit')),
+        ),
+        actions: [
+          CupertinoDialogAction(
+            child: const Text('OK', style: TextStyle(fontFamily: 'Outfit', color: Color(0xFFFF7A00))),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
+  }
 
   void _handleLogin() {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    if ((email == 'admin' || email == 'admin@ejemplo.com') && password == '1234') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: const Row(
-              children: [
-                Icon(Icons.error_outline, color: Colors.white),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Usuario o contraseña incorrectos',
-                    style: TextStyle(
-                      fontFamily: 'Outfit',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          backgroundColor: const Color(0xFFFF4A4A),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          duration: const Duration(seconds: 3),
-        ),
-      );
-    }
+    setState(() {
+      _isLoading = true;
+    });
+
+    // Simulamos carga de 1.5 segundos típica de iOS
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+      });
+
+      if ((email == 'admin' || email == 'admin@ejemplo.com') && password == '1234') {
+        Navigator.pushReplacement(
+          context,
+          CupertinoPageRoute(builder: (context) => const HomeScreen()),
+        );
+      } else {
+        _showAlertDialog('Error de inicio de sesión', 'Usuario o contraseña incorrectos');
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CupertinoPageScaffold(
       backgroundColor: const Color(0xFFFFF9F5),
-      body: SingleChildScrollView(
+      child: SingleChildScrollView(
         child: Stack(
           children: [
             // Onda superior naranja
@@ -88,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                       child: const Icon(
-                        Icons.school,
+                        CupertinoIcons.book,
                         size: 56,
                         color: Color(0xFFFF7A00),
                       ),
@@ -103,6 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF2B231E),
                       letterSpacing: -0.5,
+                      fontFamily: 'Outfit',
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -111,6 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontSize: 15,
                       color: Color(0xFF70655E),
+                      fontFamily: 'Outfit',
                     ),
                   ),
                   const SizedBox(height: 40),
@@ -127,41 +153,42 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
-                    child: TextField(
+                    child: CupertinoTextField(
                       controller: _emailController,
+                      focusNode: _emailFocus,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        hintText: 'Correo electrónico',
-                        hintStyle: const TextStyle(
-                          color: Color(0xFF8C847E),
-                          fontSize: 14,
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.person_outline,
+                      placeholder: 'Correo electrónico',
+                      placeholderStyle: const TextStyle(
+                        color: Color(0xFF8C847E),
+                        fontSize: 14,
+                        fontFamily: 'Outfit',
+                      ),
+                      prefix: const Padding(
+                        padding: EdgeInsets.only(left: 16.0),
+                        child: Icon(
+                          CupertinoIcons.person,
                           color: Color(0xFFFF7A00),
+                          size: 22,
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(
-                            color: const Color(0xFFFF7A00).withOpacity(0.18),
-                          ),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 18,
+                        horizontal: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: _emailFocus.hasFocus
+                              ? const Color(0xFFFF7A00)
+                              : const Color(0xFFFF7A00).withOpacity(0.12),
+                          width: _emailFocus.hasFocus ? 1.5 : 1.0,
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(
-                            color: const Color(0xFFFF7A00).withOpacity(0.12),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFFF7A00),
-                            width: 1.5,
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 18,
-                        ),
+                      ),
+                      style: const TextStyle(
+                        fontFamily: 'Outfit',
+                        fontSize: 15,
+                        color: Color(0xFF2B231E),
                       ),
                     ),
                   ),
@@ -179,54 +206,57 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
-                    child: TextField(
+                    child: CupertinoTextField(
                       controller: _passwordController,
+                      focusNode: _passwordFocus,
                       obscureText: _obscureText,
-                      decoration: InputDecoration(
-                        hintText: 'Contraseña',
-                        hintStyle: const TextStyle(
-                          color: Color(0xFF8C847E),
-                          fontSize: 14,
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.lock_outline,
+                      placeholder: 'Contraseña',
+                      placeholderStyle: const TextStyle(
+                        color: Color(0xFF8C847E),
+                        fontSize: 14,
+                        fontFamily: 'Outfit',
+                      ),
+                      prefix: const Padding(
+                        padding: EdgeInsets.only(left: 16.0),
+                        child: Icon(
+                          CupertinoIcons.lock,
                           color: Color(0xFFFF7A00),
+                          size: 22,
                         ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureText
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                            color: const Color(0xFFFF7A00),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscureText = !_obscureText;
-                            });
-                          },
+                      ),
+                      suffix: CupertinoButton(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        onPressed: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                        child: Icon(
+                          _obscureText
+                              ? CupertinoIcons.eye
+                              : CupertinoIcons.eye_slash,
+                          color: const Color(0xFFFF7A00),
+                          size: 22,
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(
-                            color: const Color(0xFFFF7A00).withOpacity(0.18),
-                          ),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 18,
+                        horizontal: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: _passwordFocus.hasFocus
+                              ? const Color(0xFFFF7A00)
+                              : const Color(0xFFFF7A00).withOpacity(0.12),
+                          width: _passwordFocus.hasFocus ? 1.5 : 1.0,
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(
-                            color: const Color(0xFFFF7A00).withOpacity(0.12),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFFF7A00),
-                            width: 1.5,
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 18,
-                        ),
+                      ),
+                      style: const TextStyle(
+                        fontFamily: 'Outfit',
+                        fontSize: 15,
+                        color: Color(0xFF2B231E),
                       ),
                     ),
                   ),
@@ -235,37 +265,34 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          SizedBox(
-                            height: 24,
-                            width: 24,
-                            child: Checkbox(
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _rememberMe = !_rememberMe;
+                          });
+                        },
+                        child: Row(
+                          children: [
+                            CupertinoSwitch(
                               value: _rememberMe,
                               activeColor: const Color(0xFFFF7A00),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              side: BorderSide(
-                                color: const Color(0xFFFF7A00).withOpacity(0.5),
-                                width: 1.5,
-                              ),
                               onChanged: (value) {
                                 setState(() {
-                                  _rememberMe = value ?? false;
+                                  _rememberMe = value;
                                 });
                               },
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                           const Text(
-                            'Recordarme',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Color(0xFF70655E),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Recordarme',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Color(0xFF70655E),
+                                fontFamily: 'Outfit',
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -277,6 +304,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontSize: 13,
                             color: Color(0xFFFF7A00),
                             fontWeight: FontWeight.w600,
+                            fontFamily: 'Outfit',
                           ),
                         ),
                       ),
@@ -287,24 +315,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     width: double.infinity,
                     height: 56,
-                    child: ElevatedButton(
-                      onPressed: _handleLogin,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF7A00),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        shadowColor: const Color(0xFFFF7A00).withOpacity(0.3),
-                      ),
-                      child: const Text(
-                        'Iniciar Sesión',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                    child: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      color: const Color(0xFFFF7A00),
+                      borderRadius: BorderRadius.circular(16),
+                      onPressed: _isLoading ? null : _handleLogin,
+                      child: _isLoading
+                          ? const CupertinoActivityIndicator(color: Colors.white)
+                          : const Text(
+                              'Iniciar Sesión',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Outfit',
+                              ),
+                            ),
                     ),
                   ),
                   const SizedBox(height: 48),
@@ -314,6 +340,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontSize: 12,
                       color: Color(0xFF91857D),
+                      fontFamily: 'Outfit',
                     ),
                   ),
                   const SizedBox(height: 24),
